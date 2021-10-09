@@ -87,7 +87,7 @@ class LoadDataWeekChange:
 
         other = all_assets[self.type_spot.loc[all_assets.index] == 'other']
         other["Weekly Change"] = other[["Last Week", "This Week"]].pct_change(axis=1)["This Week"]
-        other["YTD"] = other[["This Week", "As of Jan 1st"]].pct_change(axis=1)["As of Jan 1st"]
+        other["YTD"] = (other["This Week"] - other["As of Jan 1st"]) / other["As of Jan 1st"]
 
         self.change = pd.concat((other, rates))
         self.change = self.change.reindex(['Last Week', 'This Week', 'Weekly Change', 'As of Jan 1st', 'YTD'], axis=1)
