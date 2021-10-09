@@ -3,6 +3,10 @@ import pandas as pd
 import requests
 import numpy as np
 from lxml import html
+import warnings
+
+# ignore warnings
+warnings.filterwarnings('ignore')
 
 
 class LoadDataWeekChange:
@@ -27,6 +31,14 @@ class LoadDataWeekChange:
 
     @staticmethod
     def parser(item, site):
+        """
+        Args:
+            item: (str) name of the asset
+            site: (str) url for scratching
+
+        Returns:
+            values of the asset at close of every day in the previous week and the friday before that
+        """
         page = requests.get(site, headers={'User-Agent': 'Mozilla/5.0'})
         tree = html.fromstring(page.content)
         week = list()
@@ -53,6 +65,10 @@ class LoadDataWeekChange:
         return self.current, self.change
 
     def get_df_change(self):
+        """
+        Returns:
+            weekly and year to date changes
+        """
         all_assets = pd.DataFrame()
 
         all_assets["Last Week"] = self.previous.iloc[:, 0]
@@ -70,10 +86,6 @@ class LoadDataWeekChange:
         self.change = pd.concat((other, rates))
         self.change = self.change.reindex(['Last Week', 'This Week', 'Weekly Change', 'As of Jan 1st', 'YTD'], axis=1)
         self.change = self.change.reindex(self.source.index, axis=0)
-
-    @staticmethod
-    def offset_date_str(date, offset):
-        return (dt.datetime.strptime(date, "%Y-%m-%d") + dt.timedelta(days=offset)).strftime("%Y-%m-%d")
 
 
 if __name__ == '__main__':
