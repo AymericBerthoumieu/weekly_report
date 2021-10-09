@@ -50,12 +50,18 @@ class LoadDataWeekChange:
                 week.insert(0, tree.xpath(
                     '//table/tr[@class="tabledata1"]/td/text() | //table/tr[@class="tabledata2"]/td/text()')[i].replace(
                     "\xa0", ""))
-        else:
+        elif item in ("Brent $/bbl", "Gold Spot $/oz"):
             arbre = tree.xpath('//table[@class="cr_dataTable"]/tbody')
             for t in arbre[0]:
                 week.insert(1, t.text_content().split()[4].replace("'", ""))
             week = week[1:]
             last = tree.xpath('//span[@id="quote_val"]/text()')
+        else:
+            arbre = tree.xpath('//table[@class="cr_dataTable"]/tbody')
+            for i in range(7):
+                week.insert(0, arbre[0][i].text_content().split()[4].replace("'", ""))
+            last = [week[0]]
+            week = week[2:]
 
         return week, last
 
