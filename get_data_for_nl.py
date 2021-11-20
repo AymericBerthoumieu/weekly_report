@@ -44,7 +44,7 @@ class LoadDataWeekChange:
         week = list()
 
         if item in ("EONIA", "Libor 3M (USD)", "Euribor 3M"):
-            last = tree.xpath('//table/tr[@class="tabledata1"]/td/text()')[1].replace("\xa0", "")
+            last = tree.xpath('//table/tr[@class="tabledata1"]/td/text()')[11].replace("\xa0", "")
 
             for i in np.arange(1, 11, 2):
                 week.insert(0, tree.xpath(
@@ -82,7 +82,7 @@ class LoadDataWeekChange:
         all_assets["As of Jan 1st"] = self.ytd_df
 
         rates = all_assets[self.type_spot.loc[all_assets.index] == 'rate'] / 100
-        rates["Weekly Change"] = (rates["This Week"] - rates["As of Jan 1st"]) * 10000
+        rates["Weekly Change"] = (rates["This Week"] - rates["Last Week"]) * 10000
         rates["YTD"] = (rates["This Week"] - rates["As of Jan 1st"]) * 10000
 
         other = all_assets[self.type_spot.loc[all_assets.index] == 'other']
