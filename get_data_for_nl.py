@@ -43,7 +43,7 @@ class LoadDataWeekChange:
         tree = html.fromstring(page.content)
         week = list()
 
-        if item in ("EONIA", "Libor 3M (USD)", "Euribor 3M"):
+        if item in ("€STER", "Libor 3M (USD)", "Euribor 3M"):
             last = tree.xpath('//table/tr[@class="tabledata1"]/td/text()')[11].replace("\xa0", "")
 
             for i in np.arange(1, 11, 2):
