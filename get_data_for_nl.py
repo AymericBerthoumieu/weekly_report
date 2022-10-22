@@ -44,12 +44,11 @@ class LoadDataWeekChange:
         week = list()
 
         if item in ("€STER", "Libor 3M (USD)", "Euribor 3M"):
-            last = tree.xpath('//table/tr[@class="tabledata1"]/td/text()')[11].replace("\xa0", "")
+            data = tree.xpath('//table/tr[@class="tabledata1"]/td/text() | //table/tr[@class="tabledata2"]/td/text()')
+            last = data[11].replace("\xa0", "")
 
             for i in np.arange(1, 11, 2):
-                week.insert(0, tree.xpath(
-                    '//table/tr[@class="tabledata1"]/td/text() | //table/tr[@class="tabledata2"]/td/text()')[i].replace(
-                    "\xa0", ""))
+                week.insert(0, data[i].replace("\xa0", ""))
         elif item in ("Brent $/bbl", "Gold Spot $/oz"):
             arbre = tree.xpath('//table[@class="cr_dataTable"]/tbody')
             for t in arbre[0]:
@@ -60,7 +59,7 @@ class LoadDataWeekChange:
             arbre = tree.xpath('//table[@class="cr_dataTable"]/tbody')
             for i in range(7):
                 week.insert(0, arbre[0][i].text_content().split()[4].replace("'", ""))
-            last = [week[0]]
+            last = [week[1]]
             week = week[2:]
 
         return week, last
